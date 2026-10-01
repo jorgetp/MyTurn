@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>MyTurn Ajustes</title>
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#2f7a3e">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="MyTurn">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
+<link rel="icon" href="icons/icon-192.png">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<header class="topbar">
+  <h1>Ajustes</h1>
+  <a class="icon-button" href="/">
+    <svg xmlns="http://www.w3.org/2000/svg" class="icon" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M15 8a.5.5 0 0 0-.5-.5H2.707l3.147-3.146a.5.5 0 1 0-.708-.708l-4 4a.5.5 0 0 0 0 .708l4 4a.5.5 0 0 0 .708-.708L2.707 8.5H14.5A.5.5 0 0 0 15 8"/></svg>
+    Volver
+  </a>
+</header>
+
+<form id="config-form">
+  <section class="card">
+    <div class="field">
+      <label for="group-name-input">Nombre del grupo</label>
+      <input type="text" id="group-name-input" required>
+    </div>
+    <div class="field">
+      <label for="timezone-input">Zona horaria (nombre IANA)</label>
+      <input type="text" id="timezone-input" placeholder="Europe/Madrid" required>
+    </div>
+    <div class="field">
+      <label for="start-date-input">Fecha de inicio</label>
+      <input type="date" id="start-date-input" required>
+    </div>
+  </section>
+
+  <section class="card">
+    <div class="section-title">Miembros (en orden de turno)</div>
+    <div id="members-container"></div>
+    <div class="btn-row">
+      <button type="button" class="btn" id="add-member-btn">
+        <svg xmlns="http://www.w3.org/2000/svg" class="icon" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M8 2a.5.5 0 0 1 .5.5v5h5a.5.5 0 0 1 0 1h-5v5a.5.5 0 0 1-1 0v-5h-5a.5.5 0 0 1 0-1h5v-5A.5.5 0 0 1 8 2"/></svg>
+        Añadir miembro
+      </button>
+    </div>
+  </section>
+
+  <div class="btn-row">
+    <button type="submit" class="btn primary">Guardar cambios</button>
+  </div>
+  <div id="config-status" class="status-msg"></div>
+</form>
+
+<script src="settings.js"></script>
+</body>
+</html>

@@ -1,0 +1,270 @@
+:root {
+  color-scheme: light dark;
+  --bg: #f5f5f7;
+  --card-bg: #ffffff;
+  --text: #1a1a1a;
+  --muted: #6b6b70;
+  --accent: #2f7a3e;
+  --accent-bg: #e6f4ea;
+  --border: #e0e0e3;
+  --danger: #c0392b;
+  --danger-bg: #fdecea;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #121214;
+    --card-bg: #1c1c1f;
+    --text: #f2f2f2;
+    --muted: #9a9aa0;
+    --accent: #5fcf79;
+    --accent-bg: #1c3024;
+    --border: #2d2d31;
+    --danger: #ff6b5e;
+    --danger-bg: #3a1f1d;
+  }
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  padding: 16px;
+  padding-bottom: 48px;
+  max-width: 560px;
+  margin: 0 auto;
+}
+
+header.topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+header.topbar h1 {
+  font-size: 20px;
+  margin: 0;
+}
+
+.icon-button {
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 10px 16px;
+  font-size: 16px;
+  color: var(--text);
+  text-decoration: none;
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.icon {
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+  fill: currentColor;
+}
+
+.hidden {
+  display: none !important;
+}
+
+.error-card {
+  text-align: center;
+  padding: 40px 20px;
+}
+
+.error-icon {
+  width: 48px;
+  height: 48px;
+  margin: 0 auto 12px;
+  color: var(--danger);
+}
+
+.error-icon svg {
+  width: 100%;
+  height: 100%;
+  fill: currentColor;
+}
+
+.error-title {
+  font-size: 22px;
+  font-weight: 800;
+  color: var(--danger);
+  margin-bottom: 8px;
+}
+
+.error-sub {
+  font-size: 16px;
+  color: var(--muted);
+}
+
+.card {
+  background: var(--card-bg);
+  border-radius: 20px;
+  padding: 24px;
+  margin-bottom: 16px;
+  border: 1px solid var(--border);
+}
+
+.today-card {
+  text-align: center;
+  padding: 36px 20px;
+}
+
+.today-label {
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  font-size: 13px;
+  color: var(--muted);
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+
+.today-person {
+  font-size: 44px;
+  font-weight: 800;
+  margin: 8px 0;
+  word-break: break-word;
+}
+
+.today-sub {
+  font-size: 18px;
+  color: var(--accent);
+  font-weight: 600;
+}
+
+.section-title {
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  color: var(--muted);
+  font-weight: 700;
+  margin: 0 0 10px;
+}
+
+.tomorrow-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+}
+
+.tomorrow-name {
+  font-size: 22px;
+  font-weight: 700;
+}
+
+
+footer {
+  text-align: center;
+  color: var(--muted);
+  font-size: 13px;
+  margin-top: 24px;
+}
+
+/* Settings page */
+
+form .field {
+  margin-bottom: 18px;
+}
+
+label {
+  display: block;
+  font-size: 14px;
+  font-weight: 600;
+  margin-bottom: 6px;
+  color: var(--muted);
+}
+
+input[type="text"],
+input[type="date"] {
+  width: 100%;
+  padding: 12px 14px;
+  font-family: inherit;
+  font-size: 16px;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  background: var(--card-bg);
+  color: var(--text);
+  min-height: 44px;
+}
+
+.member-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.member-row input {
+  flex: 1;
+}
+
+.member-row .controls {
+  display: flex;
+  gap: 4px;
+}
+
+button {
+  font: inherit;
+  cursor: pointer;
+}
+
+.btn {
+  border: 1px solid var(--border);
+  background: var(--card-bg);
+  color: var(--text);
+  border-radius: 12px;
+  padding: 10px 14px;
+  min-height: 44px;
+  min-width: 44px;
+  font-size: 15px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+
+.btn.primary {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #fff;
+  font-weight: 700;
+}
+
+.btn.danger {
+  color: var(--danger);
+}
+
+.btn-row {
+  display: flex;
+  gap: 10px;
+  margin-top: 8px;
+}
+
+.status-msg {
+  font-size: 14px;
+  margin-top: 10px;
+  min-height: 20px;
+}
+
+.status-msg.ok {
+  color: var(--accent);
+}
+
+.status-msg.error {
+  color: var(--danger);
+}
