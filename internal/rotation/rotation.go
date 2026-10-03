@@ -32,8 +32,8 @@ func daysBetween(start, date time.Time) int {
 	return int(date.Sub(start).Hours() / 24)
 }
 
-// CalculatedMember returns the rotation member for dateStr based purely on
-// start_date and member order.
+// CalculatedMember returns the scheduled member for dateStr after applying
+// all persisted skipped days.
 func CalculatedMember(cfg *config.Config, dateStr string) (string, error) {
 	start, err := time.Parse(config.DateLayout, cfg.StartDate)
 	if err != nil {
@@ -48,7 +48,24 @@ func CalculatedMember(cfg *config.Config, dateStr string) (string, error) {
 		return "", fmt.Errorf("no members configured")
 	}
 	days := daysBetween(start, date)
-	idx := ((days % n) + n) % n
+	skipped := 0
+	isSkipped := false
+	for _, skippedDate := range cfg.SkipDates {
+		parsed, err := time.Parse(config.DateLayout, skippedDate)
+		if err != nil {
+			return "", fmt.Errorf("invalid skip date %q: %w", skippedDate, err)
+		}
+		if !parsed.After(date) {
+			skipped++
+		}
+		if parsed.Equal(date) {
+			isSkipped = true
+		}
+	}
+	if isSkipped {
+		return "", nil
+	}
+	idx := (((days - skipped) % n) + n) % n
 	return cfg.Members[idx], nil
 }
 

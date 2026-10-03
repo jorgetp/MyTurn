@@ -10,6 +10,7 @@ const el = {
   membersContainer: document.getElementById("members-container"),
   addMemberBtn: document.getElementById("add-member-btn"),
   configStatus: document.getElementById("config-status"),
+  skipToday: document.getElementById("skip-today-input"),
 };
 
 let config = null;
@@ -18,9 +19,9 @@ let config = null;
 let currentSecret = null;
 
 const ICONS = {
-  up: '<svg xmlns="http://www.w3.org/2000/svg" class="icon" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M8 15a.5.5 0 0 0 .5-.5V2.707l3.146 3.147a.5.5 0 0 0 .708-.708l-4-4a.5.5 0 0 0-.708 0l-4 4a.5.5 0 1 0 .708.708L7.5 2.707V14.5a.5.5 0 0 0 .5.5"/></svg>',
-  down: '<svg xmlns="http://www.w3.org/2000/svg" class="icon" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M8 1a.5.5 0 0 1 .5.5v11.793l3.146-3.147a.5.5 0 0 1 .708.708l-4 4a.5.5 0 0 1-.708 0l-4-4a.5.5 0 0 1 .708-.708L7.5 13.293V1.5A.5.5 0 0 1 8 1"/></svg>',
-  remove: '<svg xmlns="http://www.w3.org/2000/svg" class="icon" viewBox="0 0 16 16"><path d="M2.146 2.854a.5.5 0 1 1 .708-.708L8 7.293l5.146-5.147a.5.5 0 0 1 .708.708L8.707 8l5.147 5.146a.5.5 0 0 1-.708.708L8 8.707l-5.146 5.147a.5.5 0 0 1-.708-.708L7.293 8z"/></svg>',
+  up: '<i class="bi bi-arrow-up" aria-hidden="true"></i>',
+  down: '<i class="bi bi-arrow-down" aria-hidden="true"></i>',
+  remove: '<i class="bi bi-x-lg" aria-hidden="true"></i>',
 };
 
 function getStoredSecret() {
@@ -30,7 +31,7 @@ function getStoredSecret() {
 // requestSecret prompts once. Canceling sends the user back to the home
 // screen instead of prompting again.
 function requestSecret() {
-  const input = window.prompt("Contraseña de administrador:");
+  const input = window.prompt("Contraseña de administrador");
   if (input === null) {
     window.location.href = "/";
     throw new Error("cancelado");
@@ -55,29 +56,33 @@ async function authFetch(url, options = {}) {
 
 function setStatus(elm, message, isError) {
   elm.textContent = message;
-  elm.classList.toggle("ok", !isError);
-  elm.classList.toggle("error", !!isError);
+  elm.classList.remove("text-success", "text-danger");
+  elm.classList.add(isError ? "text-danger" : "text-success");
 }
 
 function renderMembers() {
   el.membersContainer.innerHTML = "";
   config.members.forEach((name, i) => {
     const row = document.createElement("div");
-    row.className = "member-row";
+    row.className = "d-flex align-items-center gap-2 mb-2";
 
     const input = document.createElement("input");
     input.type = "text";
+    input.className = "form-control";
     input.value = name;
+    input.setAttribute("aria-label", "Nombre del miembro " + (i + 1));
     input.addEventListener("input", () => {
       config.members[i] = input.value;
     });
 
     const controls = document.createElement("div");
-    controls.className = "controls";
+    controls.className = "btn-group flex-shrink-0";
+    controls.setAttribute("role", "group");
+    controls.setAttribute("aria-label", "Acciones del miembro " + (i + 1));
 
     const upBtn = document.createElement("button");
     upBtn.type = "button";
-    upBtn.className = "btn";
+    upBtn.className = "btn btn-outline-secondary";
     upBtn.innerHTML = ICONS.up;
     upBtn.setAttribute("aria-label", "Subir");
     upBtn.disabled = i === 0;
@@ -88,7 +93,7 @@ function renderMembers() {
 
     const downBtn = document.createElement("button");
     downBtn.type = "button";
-    downBtn.className = "btn";
+    downBtn.className = "btn btn-outline-secondary";
     downBtn.innerHTML = ICONS.down;
     downBtn.setAttribute("aria-label", "Bajar");
     downBtn.disabled = i === config.members.length - 1;
@@ -99,7 +104,7 @@ function renderMembers() {
 
     const removeBtn = document.createElement("button");
     removeBtn.type = "button";
-    removeBtn.className = "btn danger";
+    removeBtn.className = "btn btn-outline-danger";
     removeBtn.innerHTML = ICONS.remove;
     removeBtn.setAttribute("aria-label", "Eliminar miembro");
     removeBtn.disabled = config.members.length <= 1;
@@ -126,6 +131,11 @@ async function loadConfig() {
   el.timezone.value = config.timezone;
   el.startDate.value = config.start_date;
   renderMembers();
+
+  const stateResponse = await fetch("/api/state", { cache: "no-store" });
+  if (!stateResponse.ok) throw new Error("no se pudo cargar el turno de hoy");
+  const state = await stateResponse.json();
+  el.skipToday.checked = state.today_skipped;
 }
 
 el.addMemberBtn.addEventListener("click", () => {
@@ -144,7 +154,7 @@ el.form.addEventListener("submit", async (e) => {
     const res = await authFetch("/api/config", {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(config),
+      body: JSON.stringify({ ...config, skip_today: el.skipToday.checked }),
     });
     if (!res.ok) {
       const body = await res.json().catch(() => ({}));

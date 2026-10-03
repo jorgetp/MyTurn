@@ -38,6 +38,7 @@ func (s *Server) Handler() http.Handler {
 	mux.HandleFunc("GET /api/state", s.handleGetState)
 	mux.HandleFunc("GET /api/config", s.requireAdminSecret(s.handleGetConfig))
 	mux.HandleFunc("PUT /api/config", s.requireAdminSecret(s.handlePutConfig))
+	mux.HandleFunc("POST /api/skip/today", s.requireAdminSecret(s.handleSkipToday))
 	mux.Handle("/", http.FileServerFS(s.staticFS))
 	return mux
 }
@@ -56,12 +57,13 @@ func (s *Server) requireAdminSecret(next http.HandlerFunc) http.HandlerFunc {
 }
 
 type stateResponse struct {
-	GroupName string           `json:"group_name"`
-	Date      string           `json:"date"`
-	Today     string           `json:"today"`
-	Tomorrow  string           `json:"tomorrow"`
-	Members   []string         `json:"members"`
-	Upcoming  []rotation.Entry `json:"upcoming"`
+	GroupName    string           `json:"group_name"`
+	Date         string           `json:"date"`
+	Today        string           `json:"today"`
+	TodaySkipped bool             `json:"today_skipped"`
+	Tomorrow     string           `json:"tomorrow"`
+	Members      []string         `json:"members"`
+	Upcoming     []rotation.Entry `json:"upcoming"`
 }
 
 func (s *Server) handleGetState(w http.ResponseWriter, r *http.Request) {
@@ -86,12 +88,13 @@ func (s *Server) handleGetState(w http.ResponseWriter, r *http.Request) {
 	}
 
 	writeJSON(w, http.StatusOK, stateResponse{
-		GroupName: cfg.GroupName,
-		Date:      today,
-		Today:     todayMember,
-		Tomorrow:  tomorrowMember,
-		Members:   cfg.Members,
-		Upcoming:  upcoming,
+		GroupName:    cfg.GroupName,
+		Date:         today,
+		Today:        todayMember,
+		TodaySkipped: todayMember == "",
+		Tomorrow:     tomorrowMember,
+		Members:      cfg.Members,
+		Upcoming:     upcoming,
 	})
 }
 
@@ -102,10 +105,22 @@ func (s *Server) handleGetConfig(w http.ResponseWriter, r *http.Request) {
 }
 
 func (s *Server) handlePutConfig(w http.ResponseWriter, r *http.Request) {
-	var next config.Config
-	if err := json.NewDecoder(r.Body).Decode(&next); err != nil {
+	var request struct {
+		config.Config
+		SkipToday *bool `json:"skip_today"`
+	}
+	if err := json.NewDecoder(r.Body).Decode(&request); err != nil {
 		writeError(w, http.StatusBadRequest, "invalid JSON body: "+err.Error())
 		return
+	}
+	next := request.Config
+	if request.SkipToday != nil {
+		today, err := rotation.TodayInTZ(next.Timezone)
+		if err != nil {
+			writeError(w, http.StatusBadRequest, err.Error())
+			return
+		}
+		next.SkipDates = setSkipDate(next.SkipDates, today, *request.SkipToday)
 	}
 	if err := config.Validate(&next); err != nil {
 		writeError(w, http.StatusBadRequest, err.Error())
@@ -120,6 +135,68 @@ func (s *Server) handlePutConfig(w http.ResponseWriter, r *http.Request) {
 	}
 	s.cfg = &next
 	writeJSON(w, http.StatusOK, s.cfg)
+}
+
+func setSkipDate(skipDates []string, date string, skipped bool) []string {
+	result := make([]string, 0, len(skipDates)+1)
+	found := false
+	for _, existing := range skipDates {
+		if existing == date {
+			found = true
+			if !skipped {
+				continue
+			}
+		}
+		result = append(result, existing)
+	}
+	if skipped && !found {
+		result = append(result, date)
+	}
+	return result
+}
+
+type skipTodayResponse struct {
+	Date    string         `json:"date"`
+	Skipped bool           `json:"skipped"`
+	Config  *config.Config `json:"config"`
+}
+
+func (s *Server) handleSkipToday(w http.ResponseWriter, r *http.Request) {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+
+	today, err := rotation.TodayInTZ(s.cfg.Timezone)
+	if err != nil {
+		writeError(w, http.StatusInternalServerError, err.Error())
+		return
+	}
+	for _, date := range s.cfg.SkipDates {
+		if date == today {
+			writeJSON(w, http.StatusOK, skipTodayResponse{Date: today, Skipped: true, Config: s.cfg})
+			return
+		}
+	}
+
+	next := cloneConfig(s.cfg)
+	next.SkipDates = append(next.SkipDates, today)
+	if err := config.Save(s.configPath, &next); err != nil {
+		writeError(w, http.StatusInternalServerError, "saving config: "+err.Error())
+		return
+	}
+	s.cfg = &next
+	writeJSON(w, http.StatusOK, skipTodayResponse{Date: today, Skipped: true, Config: s.cfg})
+}
+
+func cloneConfig(cfg *config.Config) config.Config {
+	members := append([]string(nil), cfg.Members...)
+	skipDates := append([]string(nil), cfg.SkipDates...)
+	return config.Config{
+		GroupName: cfg.GroupName,
+		Timezone:  cfg.Timezone,
+		StartDate: cfg.StartDate,
+		Members:   members,
+		SkipDates: skipDates,
+	}
 }
 
 func writeJSON(w http.ResponseWriter, status int, v any) {

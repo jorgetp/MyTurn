@@ -5,47 +5,53 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>MyTurn</title>
 <link rel="manifest" href="manifest.json">
-<meta name="theme-color" content="#2f7a3e">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="apple-mobile-web-app-title" content="MyTurn">
 <link rel="apple-touch-icon" href="icons/icon-192.png">
 <link rel="icon" href="icons/icon-192.png">
-<link rel="stylesheet" href="styles.css">
+<link rel="stylesheet" href="bootstrap.min.css">
+<link rel="stylesheet" href="bootstrap-theme.css">
+<link rel="stylesheet" href="bootstrap-icons/bootstrap-icons.min.css">
+<script src="theme.js"></script>
 </head>
-<body>
-<header class="topbar">
-  <h1 id="group-name">MyTurn</h1>
-  <a class="icon-button" href="settings.html">
-    <svg xmlns="http://www.w3.org/2000/svg" class="icon" viewBox="0 0 16 16"><path d="M9.405 1.05c-.413-1.4-2.397-1.4-2.81 0l-.1.34a1.464 1.464 0 0 1-2.105.872l-.31-.17c-1.283-.698-2.686.705-1.987 1.987l.169.311c.446.82.023 1.841-.872 2.105l-.34.1c-1.4.413-1.4 2.397 0 2.81l.34.1a1.464 1.464 0 0 1 .872 2.105l-.17.31c-.698 1.283.705 2.686 1.987 1.987l.311-.169a1.464 1.464 0 0 1 2.105.872l.1.34c.413 1.4 2.397 1.4 2.81 0l.1-.34a1.464 1.464 0 0 1 2.105-.872l.31.17c1.283.698 2.686-.705 1.987-1.987l-.169-.311a1.464 1.464 0 0 1 .872-2.105l.34-.1c1.4-.413 1.4-2.397 0-2.81l-.34-.1a1.464 1.464 0 0 1-.872-2.105l.17-.31c.698-1.283-.705-2.686-1.987-1.987l-.311.169a1.464 1.464 0 0 1-2.105-.872zM8 10.93a2.929 2.929 0 1 1 0-5.86 2.929 2.929 0 0 1 0 5.858z"/></svg>
-    Ajustes
-  </a>
-</header>
+<body class="min-vh-100 bg-body-tertiary text-body">
+<main class="container py-4">
+  <div class="row justify-content-center">
+    <div class="col-12 col-sm-10 col-md-8 col-lg-6">
+      <header class="d-flex align-items-center justify-content-between mb-4">
+        <h1 id="group-name" class="h4 m-0 p-0">MyTurn</h1>
+        <a class="btn btn-outline-secondary d-inline-flex align-items-center gap-2" href="settings.html">
+          <i class="bi bi-gear-fill" aria-hidden="true"></i> Ajustes
+        </a>
+      </header>
 
-<section class="card error-card hidden" id="error-state">
-  <div class="error-icon">
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><path d="M8.982 1.566a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767zM8 5c.535 0 .954.462.9.995l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 5.995A.905.905 0 0 1 8 5m.002 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2"/></svg>
+      <section id="error-state" class="alert alert-danger d-none text-center" role="alert">
+        <i class="bi bi-exclamation-triangle-fill fs-1 d-block mb-3" aria-hidden="true"></i>
+        <h2 class="h4 alert-heading">Servidor no disponible</h2>
+        <p class="mb-0">Vuelve a intentarlo más tarde.</p>
+      </section>
+
+      <div id="content">
+        <section class="card text-center mb-3">
+          <div class="card-body p-4">
+            <div class="text-success text-uppercase fw-bold">Hoy</div>
+            <div class="display-1 fw-bold text-break" id="today-person">—</div>
+          </div>
+        </section>
+
+        <section class="card">
+          <div class="card-body p-4">
+            <div class="small text-body-secondary text-uppercase fw-medium">Mañana</div>
+            <div class="fs-4 fw-semibold text-break text-muted" id="tomorrow-person">—</div>
+          </div>
+        </section>
+      </div>
+
+      <footer id="last-updated" class="text-body-secondary small text-center mt-4">Cargando…</footer>
+    </div>
   </div>
-  <div class="error-title">Servidor no disponible</div>
-  <div class="error-sub">Vuelve a intentarlo más tarde.</div>
-</section>
-
-<div id="content">
-<section class="card today-card">
-  <div class="today-label">Hoy</div>
-  <div class="today-person" id="today-person">—</div>
-  <div class="today-sub">Le toca</div>
-</section>
-
-<section class="card">
-  <div class="section-title">Mañana</div>
-  <div class="tomorrow-row">
-    <div class="tomorrow-name" id="tomorrow-person">—</div>
-  </div>
-</section>
-</div>
-
-<footer id="last-updated">Cargando…</footer>
+</main>
 
 <script src="app.js"></script>
 </body>

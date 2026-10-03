@@ -5,54 +5,80 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>MyTurn Ajustes</title>
 <link rel="manifest" href="manifest.json">
-<meta name="theme-color" content="#2f7a3e">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="MyTurn">
 <link rel="apple-touch-icon" href="icons/icon-192.png">
 <link rel="icon" href="icons/icon-192.png">
-<link rel="stylesheet" href="styles.css">
+<link rel="stylesheet" href="bootstrap.min.css">
+<link rel="stylesheet" href="bootstrap-theme.css">
+<link rel="stylesheet" href="bootstrap-icons/bootstrap-icons.min.css">
+<script src="theme.js"></script>
 </head>
-<body>
-<header class="topbar">
-  <h1>Ajustes</h1>
-  <a class="icon-button" href="/">
-    <svg xmlns="http://www.w3.org/2000/svg" class="icon" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M15 8a.5.5 0 0 0-.5-.5H2.707l3.147-3.146a.5.5 0 1 0-.708-.708l-4 4a.5.5 0 0 0 0 .708l4 4a.5.5 0 0 0 .708-.708L2.707 8.5H14.5A.5.5 0 0 0 15 8"/></svg>
-    Volver
-  </a>
-</header>
+<body class="min-vh-100 bg-body-tertiary text-body">
+<main class="container py-4">
+  <div class="row justify-content-center">
+    <div class="col-12 col-sm-10 col-md-8 col-lg-6">
+      <header class="d-flex align-items-center justify-content-between mb-4">
+        <h1 class="h4 m-0 p-0">Ajustes</h1>
+        <a class="btn btn-outline-secondary d-inline-flex align-items-center gap-2" href="/">
+          <i class="bi bi-arrow-left" aria-hidden="true"></i>
+          Volver
+        </a>
+      </header>
 
-<form id="config-form">
-  <section class="card">
-    <div class="field">
-      <label for="group-name-input">Nombre del grupo</label>
-      <input type="text" id="group-name-input" required>
-    </div>
-    <div class="field">
-      <label for="timezone-input">Zona horaria (nombre IANA)</label>
-      <input type="text" id="timezone-input" placeholder="Europe/Madrid" required>
-    </div>
-    <div class="field">
-      <label for="start-date-input">Fecha de inicio</label>
-      <input type="date" id="start-date-input" required>
-    </div>
-  </section>
+      <form id="config-form">
+        <section class="card mb-3">
+          <div class="card-body p-4">
+            <h2 class="h6 mb-3 text-uppercase fw-semibold text-secondary">General</h2>
+            <div class="mb-3">
+              <label for="group-name-input" class="form-label">Nombre del grupo</label>
+              <input type="text" id="group-name-input" class="form-control" required>
+            </div>
+            <div class="mb-3">
+              <label for="timezone-input" class="form-label">Zona horaria (nombre IANA)</label>
+              <input type="text" id="timezone-input" class="form-control" placeholder="Europe/Madrid" required>
+            </div>
+            <div class="mb-3">
+              <label for="start-date-input" class="form-label">Fecha de inicio</label>
+              <input type="date" id="start-date-input" class="form-control" required>
+            </div>
+          </div>
+        </section>
 
-  <section class="card">
-    <div class="section-title">Miembros (en orden de turno)</div>
-    <div id="members-container"></div>
-    <div class="btn-row">
-      <button type="button" class="btn" id="add-member-btn">
-        <svg xmlns="http://www.w3.org/2000/svg" class="icon" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M8 2a.5.5 0 0 1 .5.5v5h5a.5.5 0 0 1 0 1h-5v5a.5.5 0 0 1-1 0v-5h-5a.5.5 0 0 1 0-1h5v-5A.5.5 0 0 1 8 2"/></svg>
-        Añadir miembro
-      </button>
-    </div>
-  </section>
+        <section class="card mb-3">
+          <div class="card-body p-4">
+            <h2 class="h6 mb-3 text-uppercase fw-semibold text-secondary">Miembros</h2>
+            <div id="members-container"></div>
+            <button type="button" class="btn btn-outline-secondary d-inline-flex align-items-center gap-2 mt-2" id="add-member-btn">
+              <i class="bi bi-plus-lg" aria-hidden="true"></i>
+              Añadir miembro
+            </button>
+          </div>
+        </section>
 
-  <div class="btn-row">
-    <button type="submit" class="btn primary">Guardar cambios</button>
+        <section class="card mb-3">
+          <div class="card-body p-4">
+            <h2 class="h6 mb-3 text-uppercase fw-semibold text-secondary">Turno de hoy</h2>
+            <div class="row align-items-center g-3">
+              <div class="col d-flex justify-content-between align-items-end">
+                <div>
+                  <label for="skip-today-input" class="form-check-label fw-medium">Saltar</label>
+                  <div class="form-text">La persona de hoy pasa a mañana y los siguientes turnos se desplazan un día</div>
+                </div>
+                <div class="form-check form-switch m-0 p-0">
+                  <input type="checkbox" class="form-check-input" id="skip-today-input" role="switch">
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <div id="config-status" class="mb-2" aria-live="polite"></div>
+        <button type="submit" class="btn btn-primary w-100">Guardar cambios</button>
+      </form>
+    </div>
   </div>
-  <div id="config-status" class="status-msg"></div>
-</form>
+</main>
 
 <script src="settings.js"></script>
 </body>

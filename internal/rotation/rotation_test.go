@@ -101,6 +101,41 @@ func TestCalculatedMember_LeapDayArithmetic(t *testing.T) {
 	}
 }
 
+func TestCalculatedMember_SkippedDateMovesTurnForward(t *testing.T) {
+	cfg := testConfig()
+	cfg.SkipDates = []string{"2026-10-01"}
+	tests := []struct {
+		date string
+		want string
+	}{
+		{"2026-10-01", ""},
+		{"2026-10-02", "Ana"},
+		{"2026-10-03", "Bruno"},
+		{"2026-10-04", "Carla"},
+	}
+	for _, tc := range tests {
+		got, err := CalculatedMember(cfg, tc.date)
+		if err != nil {
+			t.Fatalf("unexpected error for %s: %v", tc.date, err)
+		}
+		if got != tc.want {
+			t.Errorf("date %s: got %q, want %q", tc.date, got, tc.want)
+		}
+	}
+}
+
+func TestCalculatedMember_MultipleSkippedDatesShiftByTheirCount(t *testing.T) {
+	cfg := testConfig()
+	cfg.SkipDates = []string{"2026-10-01", "2026-10-03"}
+	got, err := CalculatedMember(cfg, "2026-10-04")
+	if err != nil {
+		t.Fatalf("unexpected error: %v", err)
+	}
+	if got != "Bruno" {
+		t.Errorf("got %q, want %q", got, "Bruno")
+	}
+}
+
 func TestTodayInTZ_RespectsConfiguredTimezone(t *testing.T) {
 	// A fixed instant that falls on different calendar dates depending on timezone.
 	// 2026-10-01T23:30:00Z is 2026-10-02 in Europe/Madrid (UTC+2 in October, DST).

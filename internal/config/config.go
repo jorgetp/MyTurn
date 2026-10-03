@@ -18,6 +18,7 @@ type Config struct {
 	Timezone  string   `json:"timezone"`
 	StartDate string   `json:"start_date"`
 	Members   []string `json:"members"`
+	SkipDates []string `json:"skip_dates,omitempty"`
 }
 
 // Load reads and parses the configuration file at path.
@@ -99,6 +100,16 @@ func Validate(cfg *Config) error {
 	}
 	if _, err := time.LoadLocation(cfg.Timezone); err != nil {
 		return fmt.Errorf("invalid timezone %q: %w", cfg.Timezone, err)
+	}
+	seenSkipDates := make(map[string]bool, len(cfg.SkipDates))
+	for _, date := range cfg.SkipDates {
+		if _, err := time.Parse(DateLayout, date); err != nil {
+			return fmt.Errorf("invalid skip date %q: %w", date, err)
+		}
+		if seenSkipDates[date] {
+			return fmt.Errorf("duplicate skip date: %s", date)
+		}
+		seenSkipDates[date] = true
 	}
 	return nil
 }

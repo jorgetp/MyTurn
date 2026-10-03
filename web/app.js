@@ -37,11 +37,11 @@ function formatTimestamp(date) {
 }
 
 function render(state) {
-  el.content.classList.remove("hidden");
-  el.errorState.classList.add("hidden");
+  el.content.classList.remove("d-none");
+  el.errorState.classList.add("d-none");
 
   el.groupName.textContent = state.group_name || "MyTurn";
-  el.todayPerson.textContent = state.today || "—";
+  el.todayPerson.textContent = state.today_skipped ? "Sin turno" : state.today || "—";
   el.tomorrowPerson.textContent = state.tomorrow || "—";
   el.lastUpdated.textContent = "Actualizado " + formatTimestamp(new Date());
 
@@ -49,8 +49,8 @@ function render(state) {
 }
 
 function showError() {
-  el.content.classList.add("hidden");
-  el.errorState.classList.remove("hidden");
+  el.content.classList.add("d-none");
+  el.errorState.classList.remove("d-none");
   el.lastUpdated.textContent = "";
 }
 

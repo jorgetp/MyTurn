@@ -1,0 +1,9 @@
+:root {
+  --bs-border-radius: .75rem;
+  --bs-border-color-translucent: rgba(var(--bs-emphasis-color-rgb), .1);
+}
+
+[data-bs-theme="dark"] {
+  --bs-tertiary-bg: #191c1f;
+  --bs-tertiary-bg-rgb: 25, 28, 31;
+}

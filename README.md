@@ -3,7 +3,7 @@
 A tiny local-network web app that shows a household/group whose turn it is
 for a daily rotating responsibility. Works with any number of members. No
 cloud services, no accounts, no database — just Go's standard library, a
-JSON file, and plain HTML/CSS/JS.
+JSON file, locally hosted Bootstrap CSS, and vanilla JavaScript.
 
 ## Quick start
 
@@ -125,7 +125,8 @@ The config file (`data/config.json`) looks like:
   "group_name": "Home",
   "timezone": "Europe/Madrid",
   "start_date": "2026-10-01",
-  "members": ["Ana", "Bruno", "Carla", "Diego", "Elena"]
+  "members": ["Ana", "Bruno", "Carla", "Diego", "Elena"],
+  "skip_dates": []
 }
 ```
 
@@ -142,14 +143,20 @@ rewritten every day just to advance the rotation. The current date is
 always derived using the configured `timezone`, not the server's local time
 or UTC.
 
+Use **Saltar el turno de hoy** in Settings to mark today as a no-turn day.
+The person scheduled for today moves to tomorrow, and all subsequent turns
+shift forward by one day. Skip dates are persisted in `skip_dates`; repeating
+the action on the same day does not shift the schedule again.
+
 ## Administration
 
-Open the ⚙️ **Settings** link from the main screen (no login required — this
-app is meant for a trusted local network only). From there you can:
+Open the ⚙️ **Settings** link from the main screen. Settings requires the
+shared `MYTURN_ADMIN_SECRET`. From there you can:
 
 - change the group name
 - add/remove/rename/reorder members
 - change the start date and timezone
+- skip today's turn, shifting the schedule forward by one day
 
 All changes are validated server-side and written atomically (temp file +
 rename) to avoid corrupting the config file, even under concurrent updates
@@ -162,16 +169,17 @@ from multiple phones.
 | `GET /api/state`    | Today/tomorrow/upcoming rotation info      |
 | `GET /api/config`    | Current raw configuration                  |
 | `PUT /api/config`    | Replace the full configuration             |
+| `POST /api/skip/today` | Skip today's turn (requires admin secret) |
 
 All responses are JSON with `Content-Type: application/json`.
 
 ## PWA / Home Screen install
 
 The app ships a `manifest.json` and a service worker that caches the static
-HTML/CSS/JS shell, so it can still open (showing the last known state) if
-the server briefly becomes unreachable. API responses themselves are never
-cached indefinitely — if the server can't be reached, the UI clearly shows
-"Server unavailable — showing last known information."
+HTML/CSS/JS shell, so the page can open if the server is temporarily
+unreachable. API responses are not cached; without the server, the home page
+shows a server-unavailable message instead of stale turn information. The
+Bootstrap theme follows the device's light/dark preference.
 
 On iPhone: open the LAN URL in Safari → Share → **Add to Home Screen**.
 
@@ -186,7 +194,7 @@ myturn/
     rotation/rotation.go      rotation calculation
     rotation/rotation_test.go unit tests
     httpserver/handlers.go    JSON API + static file serving
-  web/                        embedded static frontend (HTML/CSS/JS/PWA assets)
+  web/                        embedded Bootstrap frontend and PWA assets
   data/config.json            external, editable configuration (not embedded)
   Dockerfile                  multi-stage build (golang -> alpine) for containerized runs
   .dockerignore
