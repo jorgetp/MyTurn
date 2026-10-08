@@ -13,6 +13,7 @@ const el = {
   skipToday: document.getElementById("skip-today-input"),
 };
 
+const t = window.myTurnI18n.translate;
 let config = null;
 // Held only in memory for this page load, never persisted, so navigating
 // away and back to settings always asks for the password again.
@@ -31,10 +32,10 @@ function getStoredSecret() {
 // requestSecret prompts once. Canceling sends the user back to the home
 // screen instead of prompting again.
 function requestSecret() {
-  const input = window.prompt("Contraseña de administrador");
+  const input = window.prompt(t("adminPassword"));
   if (input === null) {
     window.location.href = "/";
-    throw new Error("cancelado");
+    throw new Error(t("cancelled"));
   }
   currentSecret = input;
   return input;
@@ -49,7 +50,7 @@ async function authFetch(url, options = {}) {
   if (res.status === 401) {
     currentSecret = null;
     window.location.href = "/";
-    throw new Error("contraseña incorrecta");
+    throw new Error(t("incorrectPassword"));
   }
   return res;
 }
@@ -70,7 +71,7 @@ function renderMembers() {
     input.type = "text";
     input.className = "form-control";
     input.value = name;
-    input.setAttribute("aria-label", "Nombre del miembro " + (i + 1));
+    input.setAttribute("aria-label", t("memberName", { number: i + 1 }));
     input.addEventListener("input", () => {
       config.members[i] = input.value;
     });
@@ -84,7 +85,7 @@ function renderMembers() {
     upBtn.type = "button";
     upBtn.className = "btn btn-outline-secondary";
     upBtn.innerHTML = ICONS.up;
-    upBtn.setAttribute("aria-label", "Subir");
+    upBtn.setAttribute("aria-label", t("moveUp"));
     upBtn.disabled = i === 0;
     upBtn.addEventListener("click", () => {
       [config.members[i - 1], config.members[i]] = [config.members[i], config.members[i - 1]];
@@ -95,7 +96,7 @@ function renderMembers() {
     downBtn.type = "button";
     downBtn.className = "btn btn-outline-secondary";
     downBtn.innerHTML = ICONS.down;
-    downBtn.setAttribute("aria-label", "Bajar");
+    downBtn.setAttribute("aria-label", t("moveDown"));
     downBtn.disabled = i === config.members.length - 1;
     downBtn.addEventListener("click", () => {
       [config.members[i + 1], config.members[i]] = [config.members[i], config.members[i + 1]];
@@ -106,7 +107,7 @@ function renderMembers() {
     removeBtn.type = "button";
     removeBtn.className = "btn btn-outline-danger";
     removeBtn.innerHTML = ICONS.remove;
-    removeBtn.setAttribute("aria-label", "Eliminar miembro");
+    removeBtn.setAttribute("aria-label", t("removeMember"));
     removeBtn.disabled = config.members.length <= 1;
     removeBtn.addEventListener("click", () => {
       config.members.splice(i, 1);
@@ -124,7 +125,7 @@ function renderMembers() {
 
 async function loadConfig() {
   const res = await authFetch("/api/config", { cache: "no-store" });
-  if (!res.ok) throw new Error("no se pudo cargar la configuración");
+  if (!res.ok) throw new Error(t("configLoadError"));
   config = await res.json();
 
   el.groupName.value = config.group_name;
@@ -133,13 +134,13 @@ async function loadConfig() {
   renderMembers();
 
   const stateResponse = await fetch("/api/state", { cache: "no-store" });
-  if (!stateResponse.ok) throw new Error("no se pudo cargar el turno de hoy");
+  if (!stateResponse.ok) throw new Error(t("todayLoadError"));
   const state = await stateResponse.json();
   el.skipToday.checked = state.today_skipped;
 }
 
 el.addMemberBtn.addEventListener("click", () => {
-  config.members.push("Nuevo miembro");
+  config.members.push(t("newMember"));
   renderMembers();
 });
 
@@ -157,15 +158,14 @@ el.form.addEventListener("submit", async (e) => {
       body: JSON.stringify({ ...config, skip_today: el.skipToday.checked }),
     });
     if (!res.ok) {
-      const body = await res.json().catch(() => ({}));
-      throw new Error(body.error || "no se pudo guardar (" + res.status + ")");
+      throw new Error(t("saveFailed", { status: res.status }));
     }
     config = await res.json();
     renderMembers();
-    setStatus(el.configStatus, "Guardado.", false);
+    setStatus(el.configStatus, t("saved"), false);
   } catch (err) {
-    setStatus(el.configStatus, "Error: " + err.message, true);
+    setStatus(el.configStatus, t("error", { message: err.message }), true);
   }
 });
 
-loadConfig().catch((err) => setStatus(el.configStatus, "Error al cargar la configuración: " + err.message, true));
+loadConfig().catch((err) => setStatus(el.configStatus, t("error", { message: err.message }), true));

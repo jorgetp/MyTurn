@@ -2,7 +2,7 @@
 // when the local server is briefly unreachable. API requests always go to
 // the network so turn information is never served stale from cache.
 
-const CACHE_NAME = "myturn-shell-v15";
+const CACHE_NAME = "myturn-shell-v16";
 const SHELL_ASSETS = [
   "/",
   "/settings.html",
@@ -12,6 +12,7 @@ const SHELL_ASSETS = [
   "/bootstrap-icons/fonts/bootstrap-icons.woff2",
   "/bootstrap-icons/fonts/bootstrap-icons.woff",
   "/theme.js",
+  "/i18n.js",
   "/app.js",
   "/settings.js",
   "/manifest.json",

@@ -2,6 +2,7 @@
 // page in sync via polling and day-change detection.
 
 const POLL_INTERVAL_MS = 30000;
+const t = window.myTurnI18n.translate;
 
 const el = {
   groupName: document.getElementById("group-name"),
@@ -41,9 +42,9 @@ function render(state) {
   el.errorState.classList.add("d-none");
 
   el.groupName.textContent = state.group_name || "MyTurn";
-  el.todayPerson.textContent = state.today_skipped ? "Sin turno" : state.today || "—";
+  el.todayPerson.textContent = state.today_skipped ? t("noTurn") : state.today || "—";
   el.tomorrowPerson.textContent = state.tomorrow || "—";
-  el.lastUpdated.textContent = "Actualizado " + formatTimestamp(new Date());
+  el.lastUpdated.textContent = t("updated", { time: formatTimestamp(new Date()) });
 
   lastKnownDate = state.date;
 }

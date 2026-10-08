@@ -5,6 +5,13 @@ for a daily rotating responsibility. Works with any number of members. No
 cloud services, no accounts, no database — just Go's standard library, a
 JSON file, locally hosted Bootstrap CSS, and vanilla JavaScript.
 
+## Screenshots
+
+| Home | Settings |
+| --- | --- |
+| ![Home in light theme](screenshot-home-light.png) | ![Settings in light theme](screenshot-settings-light.png) |
+| ![Home in dark theme](screenshot-home-dark.png) | ![Settings in dark theme](screenshot-settings-dark.png) |
+
 ## Quick start
 
 ```
@@ -122,7 +129,7 @@ The config file (`data/config.json`) looks like:
 
 ```json
 {
-  "group_name": "Home",
+  "group_name": "Who walks Cooper?",
   "timezone": "Europe/Madrid",
   "start_date": "2026-10-01",
   "members": ["Ana", "Bruno", "Carla", "Diego", "Elena"],

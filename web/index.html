@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>MyTurn</title>
+<title data-i18n="homeTitle">MyTurn</title>
 <link rel="manifest" href="manifest.json">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
@@ -22,37 +22,38 @@
       <header class="d-flex align-items-center justify-content-between mb-4">
         <h1 id="group-name" class="h4 m-0 p-0">MyTurn</h1>
         <a class="btn btn-outline-secondary d-inline-flex align-items-center gap-2" href="settings.html">
-          <i class="bi bi-gear-fill" aria-hidden="true"></i> Ajustes
+          <i class="bi bi-gear-fill" aria-hidden="true"></i> <span data-i18n="settings">Settings</span>
         </a>
       </header>
 
       <section id="error-state" class="alert alert-danger d-none text-center" role="alert">
         <i class="bi bi-exclamation-triangle-fill fs-1 d-block mb-3" aria-hidden="true"></i>
-        <h2 class="h4 alert-heading">Servidor no disponible</h2>
-        <p>Vuelve a intentarlo más tarde.</p>
+        <h2 class="h4 alert-heading" data-i18n="serverUnavailable">Server unavailable</h2>
+        <p data-i18n="comeBackLater">Please come back later.</p>
       </section>
 
       <div id="content">
         <section class="card text-center mb-3">
           <div class="card-body p-4 my-1">
-            <div class="text-success text-uppercase fw-bold">Hoy</div>
+            <div class="text-success text-uppercase fw-bold" data-i18n="today">Today</div>
             <div class="display-1 fw-bold" id="today-person">—</div>
           </div>
         </section>
 
         <section class="card">
           <div class="card-body p-4">
-            <div class="small text-body-secondary text-uppercase fw-medium">Mañana</div>
+            <div class="small text-body-secondary text-uppercase fw-medium" data-i18n="tomorrow">Tomorrow</div>
             <div class="fs-4 text-body-secondary fw-semibold" id="tomorrow-person">—</div>
           </div>
         </section>
       </div>
 
-      <footer id="last-updated" class="text-muted small text-center mt-4">Cargando…</footer>
+      <footer id="last-updated" class="text-muted small text-center mt-4" data-i18n="loading">Loading…</footer>
     </div>
   </div>
 </main>
 
+<script src="i18n.js"></script>
 <script src="app.js"></script>
 </body>
 </html>

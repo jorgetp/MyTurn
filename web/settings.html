@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>MyTurn Ajustes</title>
+<title data-i18n="settingsTitle">MyTurn Settings</title>
 <link rel="manifest" href="manifest.json">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="MyTurn">
@@ -19,27 +19,27 @@
   <div class="row justify-content-center">
     <div class="col-12 col-sm-10 col-md-8 col-lg-6">
       <header class="d-flex align-items-center justify-content-between mb-4">
-        <h1 class="h4 m-0 p-0">Ajustes</h1>
+        <h1 class="h4 m-0 p-0" data-i18n="settings">Settings</h1>
         <a class="btn btn-outline-secondary d-inline-flex align-items-center gap-2" href="/">
           <i class="bi bi-arrow-left" aria-hidden="true"></i>
-          Volver
+          <span data-i18n="back">Back</span>
         </a>
       </header>
 
       <form id="config-form">
         <section class="card mb-3">
           <div class="card-body p-4">
-            <h2 class="h6 mb-3 text-uppercase fw-semibold text-secondary">General</h2>
+            <h2 class="h6 mb-3 text-uppercase fw-semibold text-secondary" data-i18n="general">General</h2>
             <div class="mb-3">
-              <label for="group-name-input" class="form-label">Nombre del grupo</label>
+              <label for="group-name-input" class="form-label" data-i18n="groupName">Group name</label>
               <input type="text" id="group-name-input" class="form-control" required>
             </div>
             <div class="mb-3">
-              <label for="timezone-input" class="form-label">Zona horaria (nombre IANA)</label>
+              <label for="timezone-input" class="form-label" data-i18n="timezone">Time zone (IANA name)</label>
               <input type="text" id="timezone-input" class="form-control" placeholder="Europe/Madrid" required>
             </div>
             <div class="mb-3">
-              <label for="start-date-input" class="form-label">Fecha de inicio</label>
+              <label for="start-date-input" class="form-label" data-i18n="startDate">Start date</label>
               <input type="date" id="start-date-input" class="form-control" required>
             </div>
           </div>
@@ -47,32 +47,33 @@
 
         <section class="card mb-3">
           <div class="card-body p-4">
-            <h2 class="h6 mb-3 text-uppercase fw-semibold text-secondary">Miembros</h2>
+            <h2 class="h6 mb-3 text-uppercase fw-semibold text-secondary" data-i18n="members">Members</h2>
             <div id="members-container"></div>
             <button type="button" class="btn btn-outline-secondary d-inline-flex align-items-center gap-2 mt-2" id="add-member-btn">
               <i class="bi bi-plus-lg" aria-hidden="true"></i>
-              Añadir
+              <span data-i18n="add">Add</span>
             </button>
           </div>
         </section>
 
         <section class="card mb-3">
           <div class="card-body p-4">
-            <h2 class="h6 mb-3 text-uppercase fw-semibold text-secondary">Turno de hoy</h2>
+            <h2 class="h6 mb-3 text-uppercase fw-semibold text-secondary" data-i18n="todaysTurn">Today's turn</h2>
             <div class="form-check form-switch">
               <input class="form-check-input" type="checkbox" role="switch" id="skip-today-input">
-              <label class="form-check-label" for="skip-today-input">Saltar, con lo cual la persona de hoy pasa a mañana y los siguientes turnos se desplazan un día</label>
+              <label class="form-check-label" for="skip-today-input" data-i18n="skipToday">Skip today; today's person moves to tomorrow and following turns shift by one day.</label>
             </div>
           </div>
         </section>
 
         <div id="config-status" class="mb-2" aria-live="polite"></div>
-        <button type="submit" class="btn btn-primary w-100">Guardar cambios</button>
+        <button type="submit" class="btn btn-primary w-100" data-i18n="saveChanges">Save changes</button>
       </form>
     </div>
   </div>
 </main>
 
+<script src="i18n.js"></script>
 <script src="settings.js"></script>
 </body>
 </html>
